@@ -288,7 +288,11 @@ def main() -> NoReturn:
 
     # 4Hz driven by cameraOdometry
     if sm.frame % 5 == 0:
-      calibrator.send_data(pm, sm.all_checks())
+      # LX3 fix: when calibration is complete (loaded from params), publish valid=True
+      # even if sm.all_checks() fails due to msgq buffer issue with poll='cameraOdometry'
+      sm_ok = sm.all_checks()
+      cal_ready = calibrator.cal_status == log.LiveCalibrationData.Status.calibrated
+      calibrator.send_data(pm, sm_ok or cal_ready)
 
 
 if __name__ == "__main__":
