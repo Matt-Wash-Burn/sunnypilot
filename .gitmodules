@@ -7,7 +7,7 @@
   branch = hkg-angle-steering-2025-hda1-lx3
 [submodule "msgq"]
   path = msgq_repo
-  url = https://github.com/commaai/msgq.git
+  url = https://github.com/kamdeva/msgq.git
 [submodule "rednose_repo"]
   path = rednose_repo
   url = https://github.com/commaai/rednose.git
