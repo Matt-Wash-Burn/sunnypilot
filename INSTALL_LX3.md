@@ -22,16 +22,6 @@ This branch (`lx3-hda1`) adds support for the **2026 Hyundai Palisade Hybrid SEL
 
 ---
 
-## Hardware required
-
-- **comma 3X** (mici device)
-- **comma harness hyundai_l** (26-pin KET connector)
-- 2026 Hyundai Palisade Hybrid (SEL, SEL Premium, Limited, or Calligraphy without HDA II)
-
-This branch is also reported to work on **2026 Santa Fe Hybrid (without HDA II)** since it uses the same architecture, but only LX3 Palisade is officially tested here.
-
----
-
 ## Quick install (on comma device)
 
 ```bash
