@@ -3,8 +3,8 @@
   url = https://github.com/sunnyhaibin/panda.git
 [submodule "opendbc"]
   path = opendbc_repo
-  url = https://github.com/kamdeva/opendbc.git
-  branch = hkg-angle-steering-2025-hda1-lx3
+  url = https://github.com/Matt-Wash-Burn/opendbc.git
+  branch = lx3-hda1-palisade-hev-fp
 [submodule "msgq"]
   path = msgq_repo
   url = https://github.com/kamdeva/msgq.git
