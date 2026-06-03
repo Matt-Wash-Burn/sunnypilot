@@ -19,6 +19,17 @@ ALLOWED_SPEED_THRESHOLD = 1.8  # m/s, ~4 MPH
 HYST_GAP = 0.0  # currently disabled; TODO-SP: might need to be brand-specific
 INACTIVE_TIMER = 0.4
 
+# Press-direction entry deadband (display units, mph or kph).
+# The camera registers a set-speed step ~60-100ms after each injected press, so 1-2 presses
+# are still "in flight" when v_cruise_cluster updates -> the cluster overshoots the target by
+# 1-2 units. Without a deadband the state machine immediately pressed the opposite direction
+# to undo the overshoot, which the next target update undid again, etc. (rlog 000000e2,
+# 118-124s decel: 9 of 36 presses were wrong-direction, costing ~50% of the ramp rate).
+# Only ENTER increasing/decreasing when the error exceeds DEADBAND; once pressing, still run
+# all the way to the target (exit at error 0), so any overshoot lands past the target in the
+# direction we were already moving and then sits inside the deadband instead of being chased.
+DEADBAND = 1  # tolerated |v_target - v_cruise_cluster| before starting to press
+
 
 SEND_BUTTONS = {
   State.increasing: SendButtonState.increase,
@@ -71,18 +82,18 @@ class IntelligentCruiseButtonManagement:
         # PRE_ACTIVE
         if self.state == State.preActive:
           if self.pre_active_timer <= 0:
-            if self.v_cruise_equal:
-              self.state = State.holding
-
-            elif self.v_target > self.v_cruise_cluster:
+            if self.v_target > self.v_cruise_cluster + DEADBAND:
               self.state = State.increasing
 
-            elif self.v_target < self.v_cruise_cluster and self.v_cruise_cluster > self.v_cruise_min:
+            elif self.v_target < self.v_cruise_cluster - DEADBAND and self.v_cruise_cluster > self.v_cruise_min:
               self.state = State.decreasing
+
+            else:
+              self.state = State.holding
 
         # HOLDING
         elif self.state == State.holding:
-          if not self.v_cruise_equal:
+          if abs(self.v_target - self.v_cruise_cluster) > DEADBAND:
             self.state = State.preActive
 
         # ACCELERATING
